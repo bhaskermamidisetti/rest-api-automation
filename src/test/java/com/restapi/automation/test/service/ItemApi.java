@@ -49,6 +49,13 @@ public class ItemApi {
 
     }
 
+    public Response createItemWithoutBody() {
+        return given()
+                .header(CONTENT_TYPE, APPLICATION_JSON)
+                .log().all()
+                .post(ADD_ITEM_API);
+    }
+
     private static JSONObject createItemRequestBody(Item item) {
         return new JSONObject()
                 .put("name", item.getName())

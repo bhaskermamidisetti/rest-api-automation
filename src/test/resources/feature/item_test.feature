@@ -26,3 +26,8 @@ Feature: API Object Management
     Then the delete item response code should be 200
     And the item should be deleted
 
+
+  Scenario: Create an item with invalid payload
+    Given Invalid payload to create an Item
+    Then I should see 400 status code in response
+    And I should see error message in response

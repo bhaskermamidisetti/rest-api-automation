@@ -180,15 +180,36 @@ public class ItemSteps extends AbstractSteps {
         assertTrue(actualMessage.contains("has been deleted."));
     }
 
-    @When("I create a task with empty data:")
-    public void iCreateATaskWithEmptyData() {
+    @Given("Invalid payload to create an Item")
+    public void invalidPayloadToCreateAnItem() {
+        Response actualResponse = itemApi.createItemWithoutBody();
+        actualResponse
+                .then()
+                .log()
+                .all();
+
+        assertNotNull(actualResponse);
+        getScenarioContext().setResponse(actualResponse);
+
     }
 
-    @Then("I should see a {int} status code in response")
-    public void iShouldSeeAStatusCodeInResponse(int arg0) {
+    @Then("I should see {int} status code in response")
+    public void iShouldSeeAStatusCodeInResponse(int statusCode) {
+        Response actualResponse = (Response) getScenarioContext().get(RESPONSE);
+        assertEquals(statusCode, actualResponse.statusCode());
+
+        getScenarioContext().setResponse(actualResponse);
     }
 
-    @And("I should see {string} message in response")
-    public void iShouldSeeMessageInResponse(String arg0) {
+    @And("I should see error message in response")
+    public void iShouldSeeMessageInResponse() {
+        String expectedErrorMessage = "400 Bad Request. If you are trying to create or update the data, potential issue" +
+                " is that you are sending incorrect body json or it is missing at all.";
+
+        Response actualResponse = (Response) getScenarioContext().get(RESPONSE);
+        assertEquals(expectedErrorMessage, actualResponse.jsonPath().getString("error"));
+
     }
+
+
 }
